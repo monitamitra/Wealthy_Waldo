@@ -17,7 +17,6 @@ prompt_template = PromptTemplate.from_template(
     generate a diversified investment portfolio that aligns with the user's preferences.  
     Prioritize assets with {investment_style} investment style characteristics."""
 )
-prompt_template.format(adjective="funny", content="chickens")
 
 def generate_response(input_text):
     llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0.7, google_api_key=LLM_API_KEY)
