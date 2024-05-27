@@ -1,7 +1,7 @@
 import streamlit as st
 from dotenv import load_dotenv
 import os
-from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_google_genai import GoogleGenerativeAI
 
 load_dotenv(".env")
 LLM_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -9,7 +9,7 @@ LLM_API_KEY = os.getenv("GEMINI_API_KEY")
 st.title("🦜🔗 My Investment Guru")
 
 def generate_response(input_text):
-    llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0.7, google_api_key=LLM_API_KEY)
+    llm = GoogleGenerativeAI(model="gemini-1.0-pro", temperature=0.7, google_api_key=LLM_API_KEY)
     st.info(llm(input_text))
 
 with st.form('my_form'):
