@@ -10,7 +10,7 @@ st.title("🦜🔗 My Investment Guru")
 
 def generate_response(input_text):
     llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0.7, google_api_key=LLM_API_KEY)
-    st.info(llm(input_text))
+    st.write(llm(input_text))
 
 with st.form('my_form'):
     text = st.text_area('What can I help you with today?')
