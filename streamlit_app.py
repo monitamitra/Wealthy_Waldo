@@ -41,7 +41,7 @@ tools = [retriever_tool]
 
 st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant")
 
-prompt_str_template = """System, your name is Wealthy Waldo. You are an investment planning assistant who generates a 
+prompt_str_template = """your name is Wealthy Waldo. You are an investment planning assistant who generates a 
     personalized and specific investment portfolio for a user based on the characteristics of their profile. 
     Given a user with a {risk_tolerance} risk tolerance, {investment_goal} investment goal, 
     and a {investment_horizon} investment horizon, and considering the current market data and respective 
@@ -54,9 +54,7 @@ def generate_response():
     llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0, google_api_key=LLM_API_KEY)
     prompt = ChatPromptTemplate.from_messages(
     [
-        (
-            ("system", prompt_str),
-        ),
+        ("system", prompt_str),
         ("user", "{input}"),
         ("placeholder", "{agent_scratchpad}")
     ]
