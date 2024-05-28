@@ -54,7 +54,7 @@ prompt_str = ""
 def generate_response():
     # llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0, google_api_key=LLM_API_KEY, convert_system_message_to_human=True)
     llm = ChatVertexAI(
-	model="gemini-1.0-pro", 
+	model="gemini-pro", 
 	temperature=0, 
 	convert_system_message_to_human=True
 )
