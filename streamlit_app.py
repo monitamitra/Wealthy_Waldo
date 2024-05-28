@@ -78,4 +78,6 @@ with st.form('my_form'):
     investment_styles_option = st.select_slider("Investment Styles", options = ["Passive", "Active"])
     submitted = st.form_submit_button('Submit')
     if submitted:
+        prompt_template.format(risk_tolerance = risk_tolerance_option, investment_goal = investment_goals, 
+                               investment_horizon = investment_horizon_option, investment_style = investment_styles_option)
         generate_response()
