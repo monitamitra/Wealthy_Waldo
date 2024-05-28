@@ -51,10 +51,10 @@ prompt_template = PromptTemplate.from_template(
 )
 
 def generate_response(input_text):
-    llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0.7, google_api_key=LLM_API_KEY)
+    llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0, google_api_key=LLM_API_KEY)
     agent = create_tool_calling_agent(llm, tools, prompt_template)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-    result = agent_executor.invoke(input_text)
+    result = agent_executor.invoke({"input": input_text})
     st.info(result.content)
 
 with st.form('my_form'):
