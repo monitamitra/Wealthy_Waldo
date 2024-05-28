@@ -3,14 +3,46 @@ from dotenv import load_dotenv
 import os
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.prompts import PromptTemplate
+from langchain_community.document_loaders import PyPDFLoader
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
+from langchain_community.embeddings import EdenAiEmbeddings
+from langchain.agents import tool
+from langchain.tools.retriever import create_retriever_tool
+from langchain.agents import create_tool_calling_agent
+from langchain.agents import AgentExecutor
 
 load_dotenv(".env")
+
+# create cluster and add embeddings
+loader = PyPDFLoader("data_sources/investing-101.pdf")
+pages = loader.load()
+text_splitter = RecursiveCharacterTextSplitter(
+    chunk_size=1000,
+    chunk_overlap=100, 
+    length_function=len
+)
+docs = text_splitter.split_documents(pages)
+embeddings = EdenAiEmbeddings(edenai_api_key=os.getenv("EDENAI_API_KEY"), provider="openai")
+vector_db = FAISS.from_documents(docs, embeddings)
+
 LLM_API_KEY = os.getenv("GEMINI_API_KEY")
+
+retriever = vector_db.as_retriever()
+retriever_tool = create_retriever_tool(
+    retriever,
+    "Knowledge Base",
+    """Search for information about different asset classes in investment portfolios. 
+    For generating a specific investment portfolio, you must use this tool!"""
+)
+
+tools = [retriever_tool]
+
 
 st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant")
 
 prompt_template = PromptTemplate.from_template(
-    """You are Wealthy Waldo. You are an investment planning assistant who generates a personalized and specific 
+    """Your name is Wealthy Waldo. You are an investment planning assistant who generates a personalized and specific 
     investment portfolio for a user based on the characteristics of their profile. Given a user with a {risk_tolerance}
     risk tolerance, {investment_goal} investment goal, and a {investment_horizon} investment horizon,  
     and considering the current market data and respective news for specific asset classes that you feel are necessary,  
@@ -20,7 +52,9 @@ prompt_template = PromptTemplate.from_template(
 
 def generate_response(input_text):
     llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0.7, google_api_key=LLM_API_KEY)
-    result = llm.invoke(input_text)
+    agent = create_tool_calling_agent(llm, tools, prompt_template)
+    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+    result = agent_executor.invoke(input_text)
     st.info(result.content)
 
 with st.form('my_form'):
