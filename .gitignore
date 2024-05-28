@@ -1,5 +1,4 @@
 # files to ignore
 venv
 .env
-data_sources
 database
