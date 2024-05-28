@@ -41,28 +41,26 @@ tools = [retriever_tool]
 
 st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant")
 
-prompt_template = PromptTemplate.from_template(
-    """Your name is Wealthy Waldo. You are an investment planning assistant who generates a personalized and specific 
-    investment portfolio for a user based on the characteristics of their profile. Given a user with a {risk_tolerance}
-    risk tolerance, {investment_goal} investment goal, and a {investment_horizon} investment horizon,  
-    and considering the current market data and respective news for specific asset classes that you feel are necessary,  
-    your job is to generate a diversified investment portfolio that aligns with the user's preferences.  
-    Prioritize assets with {investment_style} investment style characteristics."""
-)
+prompt_str = """Your name is Wealthy Waldo. You are an investment planning assistant who generates a 
+    personalized and specific investment portfolio for a user based on the characteristics of their profile. 
+    Given a user with a {risk_tolerance} risk tolerance, {investment_goal} investment goal, 
+    and a {investment_horizon} investment horizon, and considering the current market data and respective 
+    news for specific asset classes that you feel are necessary, your job is to generate a diversified 
+    investment portfolio that aligns with the user's preferences. Prioritize assets with {investment_style} investment style characteristics."""
 
 
 def generate_response():
     llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0, google_api_key=LLM_API_KEY)
-#     prompt = ChatPromptTemplate.from_messages(
-#     [
-#         (
-#             "system, " + prompt_template,
-#         ),
-#         ("user", "{input}"),
-#         ("placeholder", "{agent_scratchpad}")
-#     ]
-# )
-    agent = create_tool_calling_agent(llm, tools, prompt_template)
+    prompt = ChatPromptTemplate.from_messages(
+    [
+        (
+            "system, " + prompt_str,
+        ),
+        ("user", "{input}"),
+        ("placeholder", "{agent_scratchpad}")
+    ]
+)
+    agent = create_tool_calling_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "Can you generate an investment plan for me?"})
     st.info(result.content)
@@ -77,6 +75,6 @@ with st.form('my_form'):
     investment_styles_option = st.select_slider("Investment Styles", options = ["Passive", "Active"])
     submitted = st.form_submit_button('Submit')
     if submitted:
-        prompt_template.format(risk_tolerance = risk_tolerance_option, investment_goal = investment_goals, 
+        prompt_str.format(risk_tolerance = risk_tolerance_option, investment_goal = investment_goals, 
                                investment_horizon = investment_horizon_option, investment_style = investment_styles_option)
         generate_response()
