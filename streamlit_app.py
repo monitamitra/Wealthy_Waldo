@@ -2,7 +2,7 @@ import streamlit as st
 from dotenv import load_dotenv
 import os
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_core.prompts import PromptTemplate
+from langchain_core.prompts import ChatPromptTemplate
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
@@ -41,7 +41,7 @@ tools = [retriever_tool]
 
 st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant")
 
-prompt_template = PromptTemplate.from_template(
+prompt_template = ChatPromptTemplate.from_template(
     """Your name is Wealthy Waldo. You are an investment planning assistant who generates a personalized and specific 
     investment portfolio for a user based on the characteristics of their profile. Given a user with a {risk_tolerance}
     risk tolerance, {investment_goal} investment goal, and a {investment_horizon} investment horizon,  
