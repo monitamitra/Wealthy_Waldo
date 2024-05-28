@@ -62,6 +62,7 @@ def generate_response():
         ("placeholder", "{agent_scratchpad}")
     ]
 )
+    st.write(prompt_template)
     agent = create_tool_calling_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "Can you generate an investment plan for me?"})
