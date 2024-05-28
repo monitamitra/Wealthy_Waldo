@@ -51,7 +51,7 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
 prompt_str = ""
 
 def generate_response():
-    llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0, google_api_key=LLM_API_KEY)
+    llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0, google_api_key=LLM_API_KEY, convert_system_message_to_human=True)
     prompt = ChatPromptTemplate.from_messages(
     [
         ("system", prompt_str),
@@ -61,7 +61,7 @@ def generate_response():
 )
     agent = create_tool_calling_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-    result = agent_executor.invoke("Can you generate an investment plan for me?")
+    result = agent_executor.invoke({"input": "Can you generate an investment plan for me?", })
     st.info(result.content)
 
 with st.form('my_form'):
