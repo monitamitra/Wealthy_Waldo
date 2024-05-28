@@ -53,17 +53,16 @@ prompt_template = PromptTemplate.from_template(
 
 def generate_response():
     llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0, google_api_key=LLM_API_KEY)
-    prompt = ChatPromptTemplate.from_messages(
-    [
-        (
-            "system, " + prompt_template,
-        ),
-        ("user", "{input}"),
-        ("placeholder", "{agent_scratchpad}")
-    ]
-)
-    st.write(prompt_template)
-    agent = create_tool_calling_agent(llm, tools, prompt)
+#     prompt = ChatPromptTemplate.from_messages(
+#     [
+#         (
+#             "system, " + prompt_template,
+#         ),
+#         ("user", "{input}"),
+#         ("placeholder", "{agent_scratchpad}")
+#     ]
+# )
+    agent = create_tool_calling_agent(llm, tools, prompt_template)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "Can you generate an investment plan for me?"})
     st.info(result.content)
