@@ -52,7 +52,7 @@ web_search_tool = TavilySearchResults(max_results = 4)
 web_search_tool.description = """find relevant information fromt the internet needed to contruct the user's 
     investment portfolio"""
 
-tools = [retriever_tool, web_search_tool]
+tools = [web_search_tool]
 
 st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant")
 
