@@ -1,30 +1,32 @@
 import streamlit as st
 from dotenv import load_dotenv
 import os
-from langchain import hub
-from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
-from langchain_community.document_loaders import PyPDFLoader
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain.agents import tool
 from langchain.tools.retriever import create_retriever_tool
-from langchain.agents import create_tool_calling_agent
-from langchain.agents import AgentExecutor, create_react_agent
+from langchain.agents import AgentExecutor
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain_cohere import ChatCohere, create_cohere_react_agent
 
 
 load_dotenv(".env")
+urls = [
+    "https://www.schwab.com/learn/story/whats-your-portfolio-role-various-asset-classes"
+    ]
 
-# create cluster and add embeddings
-loader = PyPDFLoader("data_sources/investing-101.pdf")
+# add embeddings into vector store
+docs = [WebBaseLoader(url).load() for url in urls]
+docs_list = [item for sublist in docs for item in sublist]
 pages = loader.load()
 text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=1000,
-    chunk_overlap=100, 
+    chunk_size=500,
+    chunk_overlap=50, 
     length_function=len
 )
-docs = text_splitter.split_documents(pages)
+doc_splits = text_splitter.split_documents(docs_list)
 
 embeddings = HuggingFaceBgeEmbeddings(
     model_name="BAAI/bge-small-en-v1.5",
@@ -32,13 +34,13 @@ embeddings = HuggingFaceBgeEmbeddings(
     encode_kwargs={"normalize_embeddings": True},
 )
 # embeddings = EdenAiEmbeddings(edenai_api_key=os.getenv("EDENAI_API_KEY"), provider="openai")
-vector_db = FAISS.from_documents(docs, embeddings)
+vector_store = FAISS.from_documents(doc_splits, embeddings)
 
 LLM_API_KEY = os.getenv("GEMINI_API_KEY")
 
-retriever = vector_db.as_retriever()
+vector_store_retriever = vector_store.as_retriever()
 retriever_tool = create_retriever_tool(
-    retriever,
+    vector_store_retriever,
     "Knowledge Base",
     """Search for information about different asset classes in investment portfolios. 
     For generating a specific investment portfolio, you must use this tool!"""
