@@ -55,54 +55,28 @@ tools = [web_search_tool, retriever_tool]
 
 st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant")
 
-prompt_str_template = """Your name is Wealthy Waldo. You are an AI powered investment planning assistant 
-who generates a personalized and specific investment portfolio for a user based on the characteristics of their 
-profile. 
-**User Profile:**
-* Risk Tolerance: {risk_tolerance}
-* Investment Goal: {investment_goal}
-* Investment Horizon: {investment_horizon}
-* Starting Investment (in dollars): {start_money}
-* Investment Style: {investment_style}
+prompt_str_template = """your name is Wealthy Waldo. You are an investment planning assistant who generates a 
+    personalized and specific investment portfolio for a user based on the characteristics of their profile. 
+    Given a user with a {risk_tolerance} risk tolerance, {investment_goal} investment goal, 
+    and a {investment_horizon} investment horizon, and considering the current market data and respective news for 
+    specific asset classes that you feel are necessary, your job is to generate a diversified investment portfolio 
+    that aligns with the user's preferences. Prioritize assets with {investment_style} investment style 
+    characteristics.First use tools to search the internet for a general investment portfolio plan and then 
+    for each asset class use your asset class knowledge base to search for specific information about 
+    different asset classes in investment portfolios. You can use necessary tools to accompish your task.
+    The output should be like this: 
+    **Overall Asset Allocation :
+    * asset_class_1: allocation_1%
+    * asset_class_2: allocation_2%
+    * ... and so on for all asset classes
 
-**Overall Asset Allocation:**
-
-asset_class_1: allocation_1
-asset_class_2: allocation_2
-... and so on for all asset classes
-
-**Detailed Asset Class Breakdowns:**
-
-For each asset class:
-
-  1. **Query Vector Store:** Based on the asset class, retrieve relevant data on subcategories and investment options.
-  2. **Analyze Data:** Consider user profile, historical performance, risk profiles, and current trends (optional).
-  3. **Recommend Allocations:** Suggest specific allocations for subcategories within the asset class.
-  4. **Explain Rationale:** Justify the recommended allocations based on data analysis and user profile."""
-
-# """your name is Wealthy Waldo. You are an investment planning assistant who generates a 
-# #     personalized and specific investment portfolio for a user based on the characteristics of their profile. 
-# #     Given a user with a {risk_tolerance} risk tolerance, {investment_goal} investment goal, 
-# #     and a {investment_horizon} investment horizon, and can only start out investing {start_money} dollars at this time
-# #     and considering the current market data and respective news for specific asset classes that you feel are necessary, 
-# #     your job is to generate a diversified investment portfolio that aligns with the user's preferences. 
-# #     Prioritize assets with {investment_style} investment style characteristics.First use tools to search the 
-# #     internet for a general investment portfolio plan and then for each asset class use your asset class knowledge 
-# #     base to search for specific information about different asset classes in investment portfolios. 
-# #     You can use necessary tools to accompish your task.
-# #     The output should be like this: 
-# #     **Overall Asset Allocation :
-# #     * asset_class_1: allocation_1%
-# #     * asset_class_2: allocation_2%
-# #     * ... and so on for all asset classes
-
-# #     **Detailed Asset Class Breakdowns => using Vector Store**
-# #     **For each asset class:
-# #   * Query the vector store to find information on relevant subcategories and investment options specific to that asset class
-# #   and user's specific investment goals, investment horizon, and risk_tolerance. 
-# #   * Analyze the retrieved data using historical performance, risk profiles, etc  based on the asset class type.
-# #   * Based on this analysis and user input, recommend specific allocations for subcategories within the asset class. 
-# #   * Explain the rationale behind the allocation percentages for each subcategory."""
+    **Detailed Asset Class Breakdowns => using Vector Store**
+    **For each asset class retrieved from Shortly:
+  * Query the vector store to find information on relevant subcategories and investment options specific to that asset class
+  and user's specific investment goals, investment horizon, and risk_tolerance. 
+  * Analyze the retrieved data using historical performance, risk profiles, etc  based on the asset class type.
+  * Based on this analysis and user input, recommend specific allocations for subcategories within the asset class. 
+  * Explain the rationale behind the allocation percentages for each subcategory."""
 
 prompt_str = ""
 
@@ -119,7 +93,7 @@ def generate_response():
 
 with st.form('my_form'):
     st.info('Hello! I am Wealthy Waldo! What can I do to make you wealthy today?')
-    starting_out_money = str(st.number_input(label="How much of your money can you invest today?", step=50))
+
     risk_tolerance_option = st.select_slider("Risk Tolerance", options = [ "Conservative", "Moderate", "Aggressive"])
     investment_goals = st.text_area("What are your short-term or long-term goals?")
     investment_horizon_option = st.select_slider("Investment Horizon", options = ["Short Term (few months to 3 years)", 
@@ -129,5 +103,5 @@ with st.form('my_form'):
     submitted = st.form_submit_button('Submit')
     if submitted:
         prompt_str = prompt_str_template.format(risk_tolerance = risk_tolerance_option, investment_goal = investment_goals, 
-                               investment_horizon = investment_horizon_option, investment_style = investment_styles_option, start_money=starting_out_money)
+                               investment_horizon = investment_horizon_option, investment_style = investment_styles_option)
         generate_response()
