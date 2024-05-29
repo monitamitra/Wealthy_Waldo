@@ -2,6 +2,7 @@ import streamlit as st
 from dotenv import load_dotenv
 import os
 from langchain_google_genai import ChatGoogleGenerativeAI
+from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -67,20 +68,21 @@ def tool_chain(model_output):
     return itemgetter("arguments") | chosen_tool
 
 def generate_response():
-    llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0, google_api_key=LLM_API_KEY, convert_system_message_to_human=True)
+    # llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0, google_api_key=LLM_API_KEY, convert_system_message_to_human=True)
+    llm = ChatOpenAI(api_key = os.getenv("OPENAI_API_KEY"), model="gpt-3.5-turbo", temperature=0)
     prompt = ChatPromptTemplate.from_messages(
     [
         ("system", prompt_str),
         ("user", "{input}")
-        # ("placeholder", "{agent_scratchpad}")
+        ("placeholder", "{agent_scratchpad}")
     ]
 )
-    chain = prompt | llm | tool_chain
-    result = chain.invoke({"input": "Can you generate an investment plan for me?"})
+    # chain = prompt | llm | tool_chain
+    # result = chain.invoke({"input": "Can you generate an investment plan for me?"})
     
-    # agent = create_tool_calling_agent(llm, tools, prompt)
-    # agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-    # result = agent_executor.invoke({"input": "generate an investment plan for me.", })
+    agent = create_tool_calling_agent(llm, tools, prompt)
+    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+    result = agent_executor.invoke({"input": "generate an investment plan for me.", })
     st.info(result)
 
 with st.form('my_form'):
