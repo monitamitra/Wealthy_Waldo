@@ -16,7 +16,7 @@ from langchain_community.document_loaders import TextLoader
 
 load_dotenv(".env")
 
-loader = TextLoader("/asset_class.md")
+loader = TextLoader("asset_class.md")
 docs = loader.load()
 
 text_splitter = RecursiveCharacterTextSplitter(
