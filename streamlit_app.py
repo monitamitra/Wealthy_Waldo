@@ -63,7 +63,7 @@ def generate_response():
     ("system", prompt_str),
     ("user", "{input}"),
      ("placeholder", "{agent_scratchpad}")
-], tools=tools, tool_names=["Knowledge Base"])
+]).with_tools(tools=tools, tool_names=["Knowledge Base"])
 #     prompt = ChatPromptTemplate.from_messages([
 #         ("system", prompt_str),
 #         ("user", "{input}"),
