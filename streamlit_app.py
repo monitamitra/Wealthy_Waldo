@@ -52,7 +52,8 @@ st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant")
 
 prompt_str_template = """your name is Wealthy Waldo. You are an investment planning assistant who generates a 
     personalized and specific investment portfolio for a user based on the characteristics of their profile. You 
-    have access to the following set of tools. Here are the names and descriptions for each tool: {rendered_tools}
+    have access to the following set of tools. Here are the names and descriptions for each tool:
+    {rendered_tools}
     Given a user with a {risk_tolerance} risk tolerance, {investment_goal} investment goal, 
     and a {investment_horizon} investment horizon, and considering the current market data and respective 
     news for specific asset classes that you feel are necessary, your job is to generate a diversified 
@@ -93,5 +94,6 @@ with st.form('my_form'):
     submitted = st.form_submit_button('Submit')
     if submitted:
         prompt_str = prompt_str_template.format(risk_tolerance = risk_tolerance_option, investment_goal = investment_goals, 
-                               investment_horizon = investment_horizon_option, investment_style = investment_styles_option)
+                               investment_horizon = investment_horizon_option, investment_style = investment_styles_option, 
+                               rendered_tools = rendered_tools)
         generate_response()
