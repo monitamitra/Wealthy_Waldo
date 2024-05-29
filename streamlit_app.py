@@ -13,6 +13,7 @@ from langchain.agents import create_tool_calling_agent
 from langchain.agents import AgentExecutor
 from langchain.tools.render import render_text_description
 from operator import itemgetter
+from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 
 load_dotenv(".env")
 
@@ -25,7 +26,13 @@ text_splitter = RecursiveCharacterTextSplitter(
     length_function=len
 )
 docs = text_splitter.split_documents(pages)
-embeddings = EdenAiEmbeddings(edenai_api_key=os.getenv("EDENAI_API_KEY"), provider="openai")
+
+embeddings = HuggingFaceBgeEmbeddings(
+    model_name="BAAI/bge-small-en-v1.5",
+    model_kwargs={"device": "cpu"},
+    encode_kwargs={"normalize_embeddings": True},
+)
+# embeddings = EdenAiEmbeddings(edenai_api_key=os.getenv("EDENAI_API_KEY"), provider="openai")
 vector_db = FAISS.from_documents(docs, embeddings)
 
 LLM_API_KEY = os.getenv("GEMINI_API_KEY")
