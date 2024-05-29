@@ -11,6 +11,8 @@ from langchain.agents import AgentExecutor
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain_cohere import ChatCohere, create_cohere_react_agent
 from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_community.tools.polygon.ticker_news import PolygonTickerNews
+from langchain_community.utilities.polygon import PolygonAPIWrapper
 
 
 load_dotenv(".env")
@@ -47,12 +49,19 @@ retriever_tool = create_retriever_tool(
 )
 
 os.environ["TAVILY_API_KEY"] = os.getenv("TAVILY_API_KEY")
+os.environ["POLYGON_API_KEY"] = os.getenv("POLYGON_API_KEY")
 
 web_search_tool = TavilySearchResults(max_results = 4)
 web_search_tool.description = """find relevant information fromt the internet needed to contruct the user's 
     investment portfolio"""
+@tool
+def get_financial_news(ticker):
+    api_wrapper = PolygonAPIWrapper()
+    financial_news_tool = PolygonTickerNews(api_wrapper=api_wrapper)
+    financial_news = financial_news_tool.run(ticker)
+    return financial_news
 
-tools = [web_search_tool]
+tools = [web_search_tool, get_financial_news]
 
 st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant")
 
@@ -63,7 +72,7 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
     news for specific asset classes that you feel are necessary, your job is to generate a diversified 
     investment portfolio that aligns with the user's preferences. Prioritize assets with {investment_style} 
     investment style characteristics.
-    Considering the suggested asset allocation you feel is necessary and current market data, 
+    Considering the suggested asset allocation you feel is necessary and current market and financial news data, 
     generate a diversified investment portfolio with specific allocations to each asset class 
     that aligns with the user's preferences. BE VERY SPECIFIC. You can use necessary tools to provide 
     more information to the user."""
