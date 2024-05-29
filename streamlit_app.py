@@ -11,7 +11,7 @@ from langchain.tools.retriever import create_retriever_tool
 from langchain.agents import create_tool_calling_agent
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
-from langchain_cohere import ChatCohere
+from langchain_cohere import ChatCohere, create_cohere_react_agent
 
 
 load_dotenv(".env")
@@ -58,23 +58,14 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
 prompt_str = ""
 
 def generate_response():
-    llm = ChatCohere(cohere_api_key=os.getenv("COHERE_API_KEY"))
+    llm = ChatCohere(cohere_api_key=os.getenv("COHERE_API_KEY"), temperature = 0, model = "command-r")
     prompt = ChatPromptTemplate.from_messages([
-    ("system", prompt_str),
-    ("user", "{input}"),
-     ("placeholder", "{agent_scratchpad}")
-]).with_tools(tools=tools, tool_names=["Knowledge Base"])
-#     prompt = ChatPromptTemplate.from_messages([
-#         ("system", prompt_str),
-#         ("user", "{input}"),
-#         ("placeholder", "{agent_scratchpad}")], 
-#     tools = tools, 
-#     tool_names = ["Knowledge Base"]
-# )
+        ("system", prompt_str),
+        ("user", "{input}")])
     
-    agent = create_react_agent(llm, tools, prompt)
+    agent = create_cohere_react_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-    result = agent_executor.invoke({"input": "generate an investment plan for me.", })
+    result = agent_executor.invoke({"input": "generate an investment plan for me." })
     st.info(result)
 
 with st.form('my_form'):
