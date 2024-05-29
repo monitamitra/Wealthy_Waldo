@@ -5,3 +5,4 @@ faiss-cpu
 transformers
 langchain_cohere
 tavily-python
+sentence_transformers
