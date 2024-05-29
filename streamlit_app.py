@@ -53,7 +53,7 @@ web_search_tool.description = """find relevant information fromt the internet ne
 
 tools = [web_search_tool, retriever_tool]
 
-st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant")
+st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant 💸")
 
 prompt_str_template = """your name is Wealthy Waldo. You are an investment planning assistant who generates a 
     personalized and specific investment portfolio for a user based on the characteristics of their profile. 
