@@ -10,3 +10,4 @@ transformers
 huggingface_hub
 langchain_cohere
 bs4
+tavily-python

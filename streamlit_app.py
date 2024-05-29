@@ -10,6 +10,7 @@ from langchain.tools.retriever import create_retriever_tool
 from langchain.agents import AgentExecutor
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain_cohere import ChatCohere, create_cohere_react_agent
+from langchain_community.tools.tavily_search import TavilySearchResults
 
 
 load_dotenv(".env")
@@ -45,7 +46,13 @@ retriever_tool = create_retriever_tool(
     For generating a specific investment portfolio, you must use this tool!"""
 )
 
-tools = [retriever_tool]
+os.environ["TAVILY_API_KEY"] = os.getenv("TAVILY_API_KEY")
+
+web_search_tool = TavilySearchResults(max_results = 4)
+web_search_tool.description = """find relevant information fromt the internet needed to contruct the user's 
+    investment portfolio"""
+
+tools = [retriever_tool, web_search_tool]
 
 st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant")
 
@@ -55,11 +62,8 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
     and a {investment_horizon} investment horizon, and considering the current market data and respective 
     news for specific asset classes that you feel are necessary, your job is to generate a diversified 
     investment portfolio that aligns with the user's preferences. Prioritize assets with {investment_style} 
-    investment style characteristics.  Here are some sample portfolios for reference: 
-    * Conservative Portfolio (focuses on capital preservation): Bonds (70%), Stocks (30%)
-    * Moderate Portfolio (seeks balance between risk and return): Bonds (50%), Stocks (50%)
-    * Aggressive Portfolio (prioritizes growth potential): Bonds (30%), Stocks (70%)
-    Considering the suggested asset allocation and current market data, 
+    investment style characteristics.
+    Considering the suggested asset allocation you feel is necessary and current market data, 
     generate a diversified investment portfolio with specific allocations to each asset class 
     that aligns with the user's preferences. BE VERY SPECIFIC. You can use necessary tools to provide 
     more information to the user."""
