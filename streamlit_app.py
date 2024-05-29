@@ -14,7 +14,7 @@ from langchain_cohere import ChatCohere, create_cohere_react_agent
 
 load_dotenv(".env")
 urls = [
-    "https://www.schwab.com/learn/story/whats-your-portfolio-role-various-asset-classes"
+    "https://www.americancentury.com/insights/asset-classes-the-building-blocks-of-portfolios/"
     ]
 
 # add embeddings into vector store
@@ -67,7 +67,7 @@ def generate_response():
     agent = create_cohere_react_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "generate an investment plan for me." })
-    st.info(result)
+    st.info(result.output)
 
 with st.form('my_form'):
     st.info('Hello! I am Wealthy Waldo! What can I do to make you wealthy today?')
