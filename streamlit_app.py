@@ -54,14 +54,14 @@ os.environ["POLYGON_API_KEY"] = os.getenv("POLYGON_API_KEY")
 web_search_tool = TavilySearchResults(max_results = 4)
 web_search_tool.description = """find relevant information fromt the internet needed to contruct the user's 
     investment portfolio"""
-@tool
-def get_financial_news(ticker):
-    api_wrapper = PolygonAPIWrapper()
-    financial_news_tool = PolygonTickerNews(api_wrapper=api_wrapper)
-    financial_news = financial_news_tool.run(ticker)
-    return financial_news
 
-tools = [web_search_tool, get_financial_news]
+
+api_wrapper = PolygonAPIWrapper()
+financial_news_tool = PolygonTickerNews(api_wrapper=api_wrapper)
+financial_news_tool.description = """find relevant financial news abot a specific asset class type to influence what the user
+    should invest in at this time"""
+
+tools = [web_search_tool, financial_news_tool]
 
 st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant")
 
@@ -87,7 +87,7 @@ def generate_response():
     
     agent = create_cohere_react_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-    result = agent_executor.invoke({"input": "generate an investment plan for me." })
+    result = agent_executor.invoke({"input": "generate an personalized investment portfolio for me." })
     st.info(result.get("output"))
 
 with st.form('my_form'):
