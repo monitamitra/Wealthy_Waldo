@@ -123,13 +123,9 @@ Base metals are common metals used in commercial and industrial applications, su
 # How to Invest in Base Metals 
 Holding on to aluminum, zinc, and copper may not necessarily be very fruitful. Because of their low prices, investors would have to hold copious amounts of these commodities in order to profit.Instead, holding stocks in base metals companies like aluminum company Alcoa or a steel company like U.S. Steel is a great way to get a foot in the door. Furthermore, holding ETFs like the SPDR S&P Metals & Mining ETF provides exposure to companies involved in metals and mining.
 
-## Types of Portfolios
 
-1. Growth portfolio
-From the name itself, a growth portfolio’s aim is to promote growth by taking greater risks, including investing in growing industries. Portfolios focused on growth investments typically offer both higher potential rewards and concurrent higher potential risk. Growth investing often involves investments in younger companies that have more potential for growth as compared to larger, well-established firms.
+- promote growth by taking greater risks, including investing in growing industries. Portfolios focused on growth investments typically offer both higher potential rewards and concurrent higher potential risk. Growth investing often involves investments in younger companies that have more potential for growth as compared to larger, well-established firms.
 
-2. Income portfolio
-Generally speaking, an income portfolio is more focused on securing regular income from investments as opposed to focusing on potential capital gains. An example is buying stocks based on the stock’s dividends rather than on a history of share price appreciation.
+more secure way of investing => more focused on securing regular income from investments as opposed to focusing on potential capital gains. An example is buying stocks based on the stock’s dividends rather than on a history of share price appreciation.
 
-3. Value portfolio
-For value portfolios, an investor takes advantage of buying cheap assets by valuation. They are especially useful during difficult economic times when many businesses and investments struggle to survive and stay afloat. Investors, then, search for companies with profit potential but that are currently priced below what analysis deems their fair market value to be. In short, value investing focuses on finding bargains in the market.
+good for emergency funds => an investor takes advantage of buying cheap assets by valuation. They are especially useful during difficult economic times when many businesses and investments struggle to survive and stay afloat. Investors, then, search for companies with profit potential but that are currently priced below what analysis deems their fair market value to be. In short, value investing focuses on finding bargains in the market.

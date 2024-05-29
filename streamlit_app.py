@@ -72,7 +72,7 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
     * ... and so on for all asset classes
 
     **Detailed Asset Class Breakdowns => using Vector Store**
-    **For each asset class retrieved from Shortly:
+    **For each asset class:
   * Query the vector store to find information on relevant subcategories and investment options specific to that asset class
   and user's specific investment goals, investment horizon, and risk_tolerance. 
   * Analyze the retrieved data using historical performance, risk profiles, etc  based on the asset class type.
