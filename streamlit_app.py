@@ -1,25 +1,18 @@
 import streamlit as st
 from dotenv import load_dotenv
 import os
-from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_openai import ChatOpenAI
+from langchain import hub
 from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain_community.embeddings import EdenAiEmbeddings
 from langchain.agents import tool
 from langchain.tools.retriever import create_retriever_tool
 from langchain.agents import create_tool_calling_agent
-from langchain.agents import AgentExecutor
-from langchain.tools.render import render_text_description
-from operator import itemgetter
+from langchain.agents import AgentExecutor, create_react_agent
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
-from langchain_community.llms import HuggingFaceEndpoint
-from langchain_community.chat_models.huggingface import ChatHuggingFace
+from langchain_cohere import ChatCohere
 
-llm = HuggingFaceEndpoint(repo_id="JosephusCheung/LL7M")
-chat_model = ChatHuggingFace(llm=llm)
 
 load_dotenv(".env")
 
@@ -52,7 +45,6 @@ retriever_tool = create_retriever_tool(
 )
 
 tools = [retriever_tool]
-rendered_tools = render_text_description(tools)
 
 st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant")
 
@@ -65,14 +57,8 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
 
 prompt_str = ""
 
-def tool_chain(model_output):
-    tool_map = {tool.name: tool for tool in tools}
-    chosen_tool = tool_map[model_output["name"]]
-    return itemgetter("arguments") | chosen_tool
-
 def generate_response():
-    # llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0, google_api_key=LLM_API_KEY, convert_system_message_to_human=True)
-    # llm = ChatOpenAI(api_key = os.getenv("OPENAI_API_KEY"), model="gpt-3.5-turbo", temperature=0)
+    llm = ChatCohere(cohere_api_key=os.getenv("COHERE_API_KEY"))
     prompt = ChatPromptTemplate.from_messages(
     [
         ("system", prompt_str),
@@ -80,11 +66,8 @@ def generate_response():
         ("placeholder", "{agent_scratchpad}")
     ]
 )
-    # chain = prompt | llm | tool_chain
-    # result = chain.invoke({"input": "Can you generate an investment plan for me?"})
-    llm = HuggingFaceEndpoint(repo_id="HuggingFaceH4/zephyr-7b-beta")
-    chat_model = ChatHuggingFace(llm=llm)
-    agent = create_tool_calling_agent(chat_model, tools, prompt)
+
+    agent = create_react_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "generate an investment plan for me.", })
     st.info(result)
