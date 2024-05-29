@@ -11,13 +11,11 @@ from langchain.agents import AgentExecutor
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain_cohere import ChatCohere, create_cohere_react_agent
 from langchain_community.tools.tavily_search import TavilySearchResults
-from langchain_community.tools.polygon.ticker_news import PolygonTickerNews
-from langchain_community.utilities.polygon import PolygonAPIWrapper
 
 
 load_dotenv(".env")
 urls = [
-    "https://www.americancentury.com/insights/asset-classes-the-building-blocks-of-portfolios/"
+    "https://www.nerdwallet.com/article/investing/types-of-stocks"
     ]
 
 # add embeddings into vector store
@@ -35,7 +33,6 @@ embeddings = HuggingFaceBgeEmbeddings(
     model_kwargs={"device": "cpu"},
     encode_kwargs={"normalize_embeddings": True},
 )
-# embeddings = EdenAiEmbeddings(edenai_api_key=os.getenv("EDENAI_API_KEY"), provider="openai")
 vector_store = FAISS.from_documents(doc_splits, embeddings)
 
 LLM_API_KEY = os.getenv("GEMINI_API_KEY")
@@ -43,7 +40,7 @@ LLM_API_KEY = os.getenv("GEMINI_API_KEY")
 vector_store_retriever = vector_store.as_retriever()
 retriever_tool = create_retriever_tool(
     vector_store_retriever,
-    "Knowledge Base",
+    "Asset class knowledge base",
     """Search for information about different asset classes in investment portfolios. 
     For generating a specific investment portfolio, you must use this tool!"""
 )
@@ -56,12 +53,7 @@ web_search_tool.description = """find relevant information fromt the internet ne
     investment portfolio"""
 
 
-api_wrapper = PolygonAPIWrapper()
-financial_news_tool = PolygonTickerNews(api_wrapper=api_wrapper)
-financial_news_tool.description = """find relevant financial news abot a specific asset class type to influence what the user
-    should invest in at this time"""
-
-tools = [web_search_tool, financial_news_tool]
+tools = [web_search_tool, retriever_tool]
 
 st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant")
 
