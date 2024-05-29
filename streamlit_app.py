@@ -2,7 +2,6 @@ import streamlit as st
 from dotenv import load_dotenv
 import os
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain_google_vertexai import ChatVertexAI
 from langchain_core.prompts import PromptTemplate, ChatPromptTemplate
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -12,6 +11,8 @@ from langchain.agents import tool
 from langchain.tools.retriever import create_retriever_tool
 from langchain.agents import create_tool_calling_agent
 from langchain.agents import AgentExecutor
+from langchain.tools.render import render_text_description
+from operator import itemgetter
 
 load_dotenv(".env")
 
@@ -38,12 +39,13 @@ retriever_tool = create_retriever_tool(
 )
 
 tools = [retriever_tool]
-
+rendered_tools = render_text_description(tools)
 
 st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant")
 
 prompt_str_template = """your name is Wealthy Waldo. You are an investment planning assistant who generates a 
-    personalized and specific investment portfolio for a user based on the characteristics of their profile. 
+    personalized and specific investment portfolio for a user based on the characteristics of their profile. You 
+    have access to the following set of tools. Here are the names and descriptions for each tool: {rendered_tools}
     Given a user with a {risk_tolerance} risk tolerance, {investment_goal} investment goal, 
     and a {investment_horizon} investment horizon, and considering the current market data and respective 
     news for specific asset classes that you feel are necessary, your job is to generate a diversified 
@@ -51,24 +53,27 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
 
 prompt_str = ""
 
+def tool_chain(model_output):
+    tool_map = {tool.name: tool for tool in tools}
+    chosen_tool = tool_map[model_output["name"]]
+    return itemgetter("arguments") | chosen_tool
+
 def generate_response():
-    # llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0, google_api_key=LLM_API_KEY, convert_system_message_to_human=True)
-    llm = ChatVertexAI(
-	model="gemini-pro", 
-	temperature=0, 
-	convert_system_message_to_human=True
-)
+    llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0, google_api_key=LLM_API_KEY, convert_system_message_to_human=True)
     prompt = ChatPromptTemplate.from_messages(
     [
         ("system", prompt_str),
-        ("user", "{input}"),
-        ("placeholder", "{agent_scratchpad}")
+        ("user", "{input}")
+        # ("placeholder", "{agent_scratchpad}")
     ]
 )
-    agent = create_tool_calling_agent(llm, tools, prompt)
-    agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
-    result = agent_executor.invoke({"input": "generate an investment plan for me.", })
-    st.info(result.content)
+    chain = prompt | llm | tool_chain
+    result = chain.invoke({"input": "Can you generate an investment plan for me?"})
+    
+    # agent = create_tool_calling_agent(llm, tools, prompt)
+    # agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
+    # result = agent_executor.invoke({"input": "generate an investment plan for me.", })
+    st.info(result)
 
 with st.form('my_form'):
     st.info('Hello! I am Wealthy Waldo! What can I do to make you wealthy today?')
