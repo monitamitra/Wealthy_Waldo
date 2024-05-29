@@ -21,8 +21,8 @@ urls = [
 docs = [WebBaseLoader(url).load() for url in urls]
 docs_list = [item for sublist in docs for item in sublist]
 text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=500,
-    chunk_overlap=50, 
+    chunk_size=100,
+    chunk_overlap=10, 
     length_function=len
 )
 doc_splits = text_splitter.split_documents(docs_list)
