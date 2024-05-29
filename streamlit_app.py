@@ -71,7 +71,7 @@ def generate_response():
     prompt = ChatPromptTemplate.from_messages(
     [
         ("system", prompt_str),
-        ("user", "{input}")
+        ("user", "{input}"),
         ("placeholder", "{agent_scratchpad}")
     ]
 )
