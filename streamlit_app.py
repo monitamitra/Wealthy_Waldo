@@ -67,7 +67,7 @@ def generate_response():
     agent = create_cohere_react_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "generate an investment plan for me." })
-    st.info(result.output)
+    st.info(result)
 
 with st.form('my_form'):
     st.info('Hello! I am Wealthy Waldo! What can I do to make you wealthy today?')
