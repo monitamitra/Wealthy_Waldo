@@ -2,10 +2,8 @@ import streamlit as st
 from dotenv import load_dotenv
 import os
 from langchain_core.prompts import ChatPromptTemplate
-from langchain_community.document_loaders import WebBaseLoader
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain.agents import tool
 from langchain.tools.retriever import create_retriever_tool
 from langchain.agents import AgentExecutor
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
@@ -33,8 +31,6 @@ embeddings = HuggingFaceBgeEmbeddings(
 )
 vector_store = FAISS.from_documents(doc_splits, embeddings)
 
-LLM_API_KEY = os.getenv("GEMINI_API_KEY")
-
 vector_store_retriever = vector_store.as_retriever()
 retriever_tool = create_retriever_tool(
     vector_store_retriever,
@@ -44,7 +40,6 @@ retriever_tool = create_retriever_tool(
 )
 
 os.environ["TAVILY_API_KEY"] = os.getenv("TAVILY_API_KEY")
-os.environ["POLYGON_API_KEY"] = os.getenv("POLYGON_API_KEY")
 
 web_search_tool = TavilySearchResults(max_results = 4)
 web_search_tool.description = """find relevant information fromt the internet needed to contruct the user's 
