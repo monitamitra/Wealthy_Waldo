@@ -59,14 +59,14 @@ prompt_str = ""
 
 def generate_response():
     llm = ChatCohere(cohere_api_key=os.getenv("COHERE_API_KEY"))
-    prompt = ChatPromptTemplate.from_messages(
-    [
+    prompt = [ChatPromptTemplate.from_messages([
         ("system", prompt_str),
         ("user", "{input}"),
-        ("placeholder", "{agent_scratchpad}")
-    ]
-)
-
+        ("placeholder", "{agent_scratchpad}")], 
+    tools = tools, 
+    tool_names = ["Knowledge Base"]
+)]
+    
     agent = create_react_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "generate an investment plan for me.", })
