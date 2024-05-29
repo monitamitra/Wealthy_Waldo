@@ -9,3 +9,4 @@ langchain_openai
 transformers
 huggingface_hub
 langchain_cohere
+bs4

@@ -20,7 +20,6 @@ urls = [
 # add embeddings into vector store
 docs = [WebBaseLoader(url).load() for url in urls]
 docs_list = [item for sublist in docs for item in sublist]
-pages = loader.load()
 text_splitter = RecursiveCharacterTextSplitter(
     chunk_size=500,
     chunk_overlap=50, 
