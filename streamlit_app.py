@@ -15,6 +15,11 @@ from langchain.agents import AgentExecutor
 from langchain.tools.render import render_text_description
 from operator import itemgetter
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
+from langchain_community.llms import HuggingFaceEndpoint
+from langchain_community.chat_models.huggingface import ChatHuggingFace
+
+llm = HuggingFaceEndpoint(repo_id="JosephusCheung/LL7M")
+chat_model = ChatHuggingFace(llm=llm)
 
 load_dotenv(".env")
 
@@ -67,7 +72,7 @@ def tool_chain(model_output):
 
 def generate_response():
     # llm = ChatGoogleGenerativeAI(model="gemini-1.0-pro", temperature=0, google_api_key=LLM_API_KEY, convert_system_message_to_human=True)
-    llm = ChatOpenAI(api_key = os.getenv("OPENAI_API_KEY"), model="gpt-3.5-turbo", temperature=0)
+    # llm = ChatOpenAI(api_key = os.getenv("OPENAI_API_KEY"), model="gpt-3.5-turbo", temperature=0)
     prompt = ChatPromptTemplate.from_messages(
     [
         ("system", prompt_str),
@@ -77,8 +82,9 @@ def generate_response():
 )
     # chain = prompt | llm | tool_chain
     # result = chain.invoke({"input": "Can you generate an investment plan for me?"})
-    
-    agent = create_tool_calling_agent(llm, tools, prompt)
+    llm = HuggingFaceEndpoint(repo_id="HuggingFaceH4/zephyr-7b-beta")
+    chat_model = ChatHuggingFace(llm=llm)
+    agent = create_tool_calling_agent(chat_model, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "generate an investment plan for me.", })
     st.info(result)

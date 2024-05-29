@@ -6,3 +6,4 @@ pypdf
 faiss-cpu
 sentence_transformers
 langchain_openai
+transformers
