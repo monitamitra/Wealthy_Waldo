@@ -11,22 +11,20 @@ from langchain.agents import AgentExecutor
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain_cohere import ChatCohere, create_cohere_react_agent
 from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_community.document_loaders import TextLoader
 
 
 load_dotenv(".env")
-urls = [
-    "https://www.nerdwallet.com/article/investing/types-of-stocks"
-    ]
 
-# add embeddings into vector store
-docs = [WebBaseLoader(url).load() for url in urls]
-docs_list = [item for sublist in docs for item in sublist]
+loader = TextLoader("./index.md")
+docs = loader.load()
+
 text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size=100,
-    chunk_overlap=10, 
+    chunk_size=300,
+    chunk_overlap=30, 
     length_function=len
 )
-doc_splits = text_splitter.split_documents(docs_list)
+doc_splits = text_splitter.split_documents(docs)
 
 embeddings = HuggingFaceBgeEmbeddings(
     model_name="BAAI/bge-small-en-v1.5",
