@@ -10,7 +10,6 @@ from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain_cohere import ChatCohere, create_cohere_react_agent
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.document_loaders import TextLoader
-from langchain_community.vectorstores import Chroma
 
 
 load_dotenv(".env")
@@ -32,7 +31,7 @@ embeddings = HuggingFaceBgeEmbeddings(
     model_kwargs={"device": "cpu"},
     encode_kwargs={"normalize_embeddings": True},
 )
-db = Chroma.from_documents(doc_splits, embeddings)
+db = FAISS.from_documents(doc_splits, embeddings)
 
 # define tools for langchain agent to use => tavily to search internet and faiss to store vector embeddings
 vector_store_retriever = db.as_retriever()
