@@ -92,7 +92,7 @@ def generate_response():
 
 # formats prompt template for langchain agent according to user investment profile
 with st.form('my_form'):
-    st.info('Hello! I am Wealthy Waldo! What can I do to make you wealthy today?')
+    st.info('Hello! I am Wealthy Waldo! What can I do to make you wealthy today')
 
     risk_tolerance_option = st.select_slider("Risk Tolerance", options = [ "Conservative", "Moderate", "Aggressive"])
     investment_goals = st.text_area("What are your short-term or long-term goals?")
