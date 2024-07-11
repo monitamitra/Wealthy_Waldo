@@ -1,7 +1,3 @@
-from langchain_community.vectorstores import Chroma
-__import__('pysqlite3') 
-import sys 
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 import streamlit as st
 from dotenv import load_dotenv
 import os
@@ -13,6 +9,7 @@ from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.document_loaders import TextLoader
+from langchain_community.vectorstores import Chroma
 from langchain_openai import OpenAI
 
 
