@@ -1,11 +1,11 @@
 streamlit
+pysqlite3-binary
 python-dotenv
 langchain_community
 faiss-cpu
 transformers
 tavily-python
 sentence_transformers
-langchain-chroma
 langchain-openai
 protobuf==3.20.2
 chromadb
