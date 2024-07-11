@@ -2,7 +2,6 @@ streamlit
 python-dotenv
 langchain_community
 faiss-cpu
-pysqlite3
 transformers
 tavily-python
 sentence_transformers
