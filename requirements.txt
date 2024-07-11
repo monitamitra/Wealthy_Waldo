@@ -8,10 +8,9 @@ chromadb
 # sentence_transformers
 langchain-chroma
 langchain-openai
-# protobuf==3.20.2
-# chromadb
-# opentelemetry-api
-# opentelemetry-sdk
-# googleapis-common-protos
-# openai
-# langchain_openai
+protobuf==3.20.2
+chromadb
+opentelemetry-api
+opentelemetry-sdk
+googleapis-common-protos
+openai
