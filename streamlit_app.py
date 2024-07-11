@@ -1,16 +1,16 @@
 import streamlit as st
 from dotenv import load_dotenv
 import os
-from langchain_core.prompts import ChatPromptTemplate
+# from langchain_core.prompts import ChatPromptTemplate
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain.tools.retriever import create_retriever_tool
-from langchain.agents import AgentExecutor
-from langchain_community.embeddings import HuggingFaceBgeEmbeddings
-from langchain.agents import AgentExecutor, create_react_agent
-from langchain_community.tools.tavily_search import TavilySearchResults
+# from langchain.tools.retriever import create_retriever_tool
+# from langchain.agents import AgentExecutor
+# from langchain_community.embeddings import HuggingFaceBgeEmbeddings
+# from langchain.agents import AgentExecutor, create_react_agent
+# from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.document_loaders import TextLoader
 from langchain.vectorstores import Chroma
-from langchain_openai import OpenAI
+# from langchain_openai import OpenAI
 
 
 load_dotenv(".env")

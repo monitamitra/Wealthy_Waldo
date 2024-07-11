@@ -1,17 +1,16 @@
 streamlit
-langchain==0.0.134
-chromadb==0.3.21
+chromadb
 python-dotenv
 langchain_community
 faiss-cpu
 transformers
-tavily-python
-sentence_transformers
-langchain-openai
-protobuf==3.20.2
-opentelemetry-api
-opentelemetry-sdk
-googleapis-common-protos
-openai
-langchain_openai
+# tavily-python
+# sentence_transformers
+# langchain-openai
+# protobuf==3.20.2
+# opentelemetry-api
+# opentelemetry-sdk
+# googleapis-common-protos
+# openai
+# langchain_openai
 torch
