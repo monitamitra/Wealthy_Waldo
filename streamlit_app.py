@@ -3,14 +3,13 @@ from dotenv import load_dotenv
 import os
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
 from langchain.tools.retriever import create_retriever_tool
 from langchain.agents import AgentExecutor
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
-from langchain.agents import AgentExecutor, create_react_agent
+from langchain_cohere import ChatCohere, create_cohere_react_agent
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.document_loaders import TextLoader
-from langchain.vectorstores import FAISS
-from langchain_openai import OpenAI
 
 
 load_dotenv(".env")
@@ -32,10 +31,10 @@ embeddings = HuggingFaceBgeEmbeddings(
     model_kwargs={"device": "cpu"},
     encode_kwargs={"normalize_embeddings": True},
 )
-db = FAISS.from_documents(doc_splits, embeddings)
+vector_store = FAISS.from_documents(doc_splits, embeddings)
 
-# define tools for langchain agent to use => tavily to search internet and chromadb to store vector embeddings
-vector_store_retriever = db.as_retriever()
+# define tools for langchain agent to use => tavily to search internet and faiss to store vector embeddings
+vector_store_retriever = vector_store.as_retriever()
 retriever_tool = create_retriever_tool(
     vector_store_retriever,
     "Asset class knowledge base",
@@ -66,7 +65,7 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
     * ... and so on for all asset classes
 
     **Detailed Asset Class Breakdowns => using Vector Store**
-    **For each asset class retrieved:
+    **For each asset class retrieved from Shortly:
   * Query the vector store to find information on relevant subcategories and investment options specific to that asset class
   and user's specific investment goals, investment horizon, and risk_tolerance. 
   * Analyze the retrieved data using historical performance, risk profiles, etc  based on the asset class type.
@@ -80,12 +79,12 @@ st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant 💸")
 
 # initiates agent action to generate portfolio
 def generate_response():
-    llm = OpenAI(openai_api_key=os.getenv("OPEN_AI_API_KEY"), temperature = 0)
+    llm = ChatCohere(cohere_api_key=os.getenv("COHERE_API_KEY"), temperature = 0, model = "command-r")
     prompt = ChatPromptTemplate.from_messages([
         ("system", prompt_str),
         ("user", "{input}")])
     
-    agent = create_react_agent(llm, tools, prompt)
+    agent = create_cohere_react_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "generate an personalized investment portfolio for me." })
     st.info(result.get("output"))
