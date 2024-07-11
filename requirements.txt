@@ -1,4 +1,6 @@
-streamlit
+streamlit==1.28.1
+chromadb==0.4.17
+pysqlite3-binary
 python-dotenv
 langchain_community
 faiss-cpu
@@ -7,10 +9,8 @@ tavily-python
 sentence_transformers
 langchain-openai
 protobuf==3.20.2
-chromadb
 opentelemetry-api
 opentelemetry-sdk
 googleapis-common-protos
 openai
-langchain_openai
 torch
