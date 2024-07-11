@@ -4,4 +4,4 @@
 - Leveraged tools like Tavily AI and a FAISS vector store-backed retriever using Hugging Face embeddings for robust web search and RAG capabilities
 - Deployed the application on Streamlit for an accessible and intuitive user experience
 
-# Live Link to Project: https://wealthy-waldo.streamlit.app/
+**Link to Project:** https://wealthywaldo.streamlit.app/
