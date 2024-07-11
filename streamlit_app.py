@@ -34,7 +34,7 @@ embeddings = HuggingFaceBgeEmbeddings(
 )
 db = Chroma.from_documents(doc_splits, embeddings)
 
-# define tools for langchain agent to use => tavily to search internet and faiss to store vector embeddings
+# define tools for langchain agent to use => tavily to search internet and chromadb to store vector embeddings
 vector_store_retriever = db.as_retriever()
 retriever_tool = create_retriever_tool(
     vector_store_retriever,
@@ -66,7 +66,7 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
     * ... and so on for all asset classes
 
     **Detailed Asset Class Breakdowns => using Vector Store**
-    **For each asset class retrieved from Shortly:
+    **For each asset class retrieved:
   * Query the vector store to find information on relevant subcategories and investment options specific to that asset class
   and user's specific investment goals, investment horizon, and risk_tolerance. 
   * Analyze the retrieved data using historical performance, risk profiles, etc  based on the asset class type.
