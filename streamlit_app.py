@@ -13,9 +13,7 @@ from langchain_community.document_loaders import TextLoader
 
 
 load_dotenv(".env")
-os.environ["TAVILY_API_KEY"] = os.getenv("TAVILY_API_KEY")
 
-# turn text into embeddings and load into vector store 
 loader = TextLoader("asset_class.md")
 docs = loader.load()
 
@@ -33,7 +31,6 @@ embeddings = HuggingFaceBgeEmbeddings(
 )
 vector_store = FAISS.from_documents(doc_splits, embeddings)
 
-# define tools for langchain agent to use => tavily to search internet and faiss to store vector embeddings
 vector_store_retriever = vector_store.as_retriever()
 retriever_tool = create_retriever_tool(
     vector_store_retriever,
@@ -42,13 +39,17 @@ retriever_tool = create_retriever_tool(
     For generating a specific investment portfolio, you must use this tool!"""
 )
 
+os.environ["TAVILY_API_KEY"] = os.getenv("TAVILY_API_KEY")
+
 web_search_tool = TavilySearchResults(max_results = 4)
 web_search_tool.description = """find relevant information fromt the internet needed to contruct the user's 
     investment portfolio"""
 
+
 tools = [web_search_tool, retriever_tool]
 
-# prompt template telling the llm what it does 
+st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant 💸")
+
 prompt_str_template = """your name is Wealthy Waldo. You are an investment planning assistant who generates a 
     personalized and specific investment portfolio for a user based on the characteristics of their profile. 
     Given a user with a {risk_tolerance} risk tolerance, {investment_goal} investment goal, 
@@ -74,10 +75,6 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
 
 prompt_str = ""
 
-# streamlit formatting
-st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant 💸")
-
-# initiates agent action to generate portfolio
 def generate_response():
     llm = ChatCohere(cohere_api_key=os.getenv("COHERE_API_KEY"), temperature = 0, model = "command-r")
     prompt = ChatPromptTemplate.from_messages([
@@ -89,7 +86,6 @@ def generate_response():
     result = agent_executor.invoke({"input": "generate an personalized investment portfolio for me." })
     st.info(result.get("output"))
 
-# formats prompt template for langchain agent according to user investment profile
 with st.form('my_form'):
     st.info('Hello! I am Wealthy Waldo! What can I do to make you wealthy today?')
 
