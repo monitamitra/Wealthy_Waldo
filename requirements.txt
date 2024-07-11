@@ -1,5 +1,6 @@
 streamlit
 chromadb
+langchain
 python-dotenv
 langchain_community
 faiss-cpu
