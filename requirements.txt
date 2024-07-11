@@ -1,13 +1,8 @@
 streamlit
-langchain
 python-dotenv
-langchain
 langchain_community
 faiss-cpu
 transformers
+langchain_openai
 tavily-python
 sentence_transformers
-openai
-langchain_openai
-torch
-tiktoken
