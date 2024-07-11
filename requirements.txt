@@ -12,3 +12,5 @@ chromadb
 opentelemetry-api
 opentelemetry-sdk
 googleapis-common-protos
+openai
+langchain_openai
