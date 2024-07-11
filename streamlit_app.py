@@ -7,9 +7,7 @@ from langchain_community.vectorstores import FAISS
 from langchain.tools.retriever import create_retriever_tool
 from langchain.agents import AgentExecutor
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
-from langchain.agents import AgentExecutor, create_react_agent
-# from langchain_cohere import ChatCohere, create_cohere_react_agent
-from langchain_openai import OpenAI
+from langchain_cohere import ChatCohere, create_cohere_react_agent
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.document_loaders import TextLoader
 
@@ -78,12 +76,12 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
 prompt_str = ""
 
 def generate_response():
-    llm = OpenAI(OPENAI_API_KEY=os.getenv("OPENAI_API_KEY"), temperature = 0)
+    llm = ChatCohere(OPENAI_API_KEY=os.getenv("OPENAI_API_KEY"), temperature = 0)
     prompt = ChatPromptTemplate.from_messages([
         ("system", prompt_str),
         ("user", "{input}")])
     
-    agent = create_react_agent(llm, tools, prompt)
+    agent = create_cohere_react_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "generate an personalized investment portfolio for me." })
     st.info(result.get("output"))
