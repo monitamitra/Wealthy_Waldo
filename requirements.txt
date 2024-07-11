@@ -5,7 +5,7 @@ faiss-cpu
 transformers
 tavily-python
 chromadb
-# sentence_transformers
+sentence_transformers
 # langchain-chroma
 langchain-openai
 protobuf==3.20.2
