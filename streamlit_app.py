@@ -9,7 +9,7 @@ from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain.agents import AgentExecutor, create_react_agent
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.document_loaders import TextLoader
-from langchain_community.vectorstores import Chroma
+from langchain.vectorstores import Chroma
 from langchain_openai import OpenAI
 
 

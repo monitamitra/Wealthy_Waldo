@@ -1,4 +1,6 @@
-streamlit==1.28.1
+streamlit
+langchain==0.0.134
+chromadb==0.3.21
 python-dotenv
 langchain_community
 faiss-cpu
@@ -10,4 +12,6 @@ protobuf==3.20.2
 opentelemetry-api
 opentelemetry-sdk
 googleapis-common-protos
+openai
+langchain_openai
 torch
