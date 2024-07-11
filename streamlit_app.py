@@ -6,10 +6,11 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain.tools.retriever import create_retriever_tool
 from langchain.agents import AgentExecutor
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
-from langchain_cohere import ChatCohere, create_cohere_react_agent
+from langchain.agents import AgentExecutor, create_react_agent
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.document_loaders import TextLoader
-from langchain.vectorstores import Chroma
+from langchain_chroma import Chroma
+from langchain_openai import OpenAI
 
 
 load_dotenv(".env")
@@ -31,7 +32,7 @@ embeddings = HuggingFaceBgeEmbeddings(
     model_kwargs={"device": "cpu"},
     encode_kwargs={"normalize_embeddings": True},
 )
-db = FAISS.from_documents(doc_splits, embeddings)
+db = Chroma.from_documents(doc_splits, embeddings)
 
 # define tools for langchain agent to use => tavily to search internet and faiss to store vector embeddings
 vector_store_retriever = db.as_retriever()
@@ -79,19 +80,19 @@ st.title("🦜🔗 Wealthy Waldo: Your Investment Planning Assistant 💸")
 
 # initiates agent action to generate portfolio
 def generate_response():
-    llm = ChatCohere(cohere_api_key=os.getenv("COHERE_API_KEY"), temperature = 0, model = "command-r")
+    llm = OpenAI(openai_api_key=os.getenv("OPEN_AI_API_KEY"), temperature = 0)
     prompt = ChatPromptTemplate.from_messages([
         ("system", prompt_str),
         ("user", "{input}")])
     
-    agent = create_cohere_react_agent(llm, tools, prompt)
+    agent = create_react_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "generate an personalized investment portfolio for me." })
     st.info(result.get("output"))
 
 # formats prompt template for langchain agent according to user investment profile
 with st.form('my_form'):
-    st.info('Hello! I am Wealthy Waldo! What can I do to make you wealthy today')
+    st.info('Hello! I am Wealthy Waldo! What can I do to make you wealthy today?')
 
     risk_tolerance_option = st.select_slider("Risk Tolerance", options = [ "Conservative", "Moderate", "Aggressive"])
     investment_goals = st.text_area("What are your short-term or long-term goals?")
