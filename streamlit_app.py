@@ -25,7 +25,7 @@ text_splitter = RecursiveCharacterTextSplitter(
     chunk_overlap=30, 
     length_function=len
 )
-doc_splits = text_splitter.create_documents(docs)
+doc_splits = text_splitter.split_documents(docs)
 
 embeddings = HuggingFaceBgeEmbeddings(
     model_name="BAAI/bge-small-en-v1.5",
