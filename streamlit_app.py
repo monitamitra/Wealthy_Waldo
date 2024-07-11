@@ -13,7 +13,7 @@ from langchain_openai import OpenAI
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.document_loaders import TextLoader
 
-
+ 
 load_dotenv(".env")
 
 loader = TextLoader("asset_class.md")
