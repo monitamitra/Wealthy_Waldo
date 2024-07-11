@@ -4,6 +4,7 @@ langchain_community
 faiss-cpu
 transformers
 tavily-python
+chromadb
 # sentence_transformers
 langchain-chroma
 langchain-openai
