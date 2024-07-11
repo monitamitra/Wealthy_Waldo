@@ -3,6 +3,6 @@ python-dotenv
 langchain_community
 faiss-cpu
 transformers
-langchain_cohere
+langchain_openai
 tavily-python
 sentence_transformers
