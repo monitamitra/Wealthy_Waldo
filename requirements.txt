@@ -1,6 +1,6 @@
 streamlit==1.28.1
 chromadb==0.4.17
-pysqlite3-binary
+pysqlite3
 python-dotenv
 langchain_community
 faiss-cpu
