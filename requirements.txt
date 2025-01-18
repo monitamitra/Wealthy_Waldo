@@ -1,7 +1,6 @@
 streamlit
 python-dotenv
 langchain_community
-langchain_openai
 faiss-cpu
 transformers
 langchain_cohere

@@ -3,8 +3,6 @@ from dotenv import load_dotenv
 import os
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_openai import ChatOpenAI
-from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.tools.retriever import create_retriever_tool
 from langchain.agents import AgentExecutor
@@ -12,7 +10,6 @@ from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain_cohere import ChatCohere, create_cohere_react_agent
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.document_loaders import TextLoader
-from langchain.agents import AgentExecutor, create_react_agent
 
  
 load_dotenv(".env")
@@ -27,8 +24,12 @@ text_splitter = RecursiveCharacterTextSplitter(
 )
 doc_splits = text_splitter.split_documents(docs)
 
-
-vector_store = FAISS.from_documents(doc_splits, OpenAIEmbeddings())
+embeddings = HuggingFaceBgeEmbeddings(
+    model_name="BAAI/bge-small-en-v1.5",
+    model_kwargs={"device": "cpu"},
+    encode_kwargs={"normalize_embeddings": True},
+)
+vector_store = FAISS.from_documents(doc_splits, embeddings)
 
 vector_store_retriever = vector_store.as_retriever()
 retriever_tool = create_retriever_tool(
@@ -70,23 +71,17 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
   and user's specific investment goals, investment horizon, and risk_tolerance. 
   * Analyze the retrieved data using historical performance, risk profiles, etc  based on the asset class type.
   * Based on this analysis and user input, recommend specific allocations for subcategories within the asset class. 
-  * Explain the rationale behind the allocation percentages for each subcategory.
-  Tools: {tools}
-  Tool names: {tool_names}
-
-  {agent_scratchpad}
-  """
-
+  * Explain the rationale behind the allocation percentages for each subcategory."""
 
 prompt_str = ""
 
 def generate_response():
-    llm = ChatOpenAI(OPENAI_API_KEY=os.getenv("OPENAI_API_KEY"), temperature = 0)
+    llm = ChatCohere(OPENAI_API_KEY=os.getenv("OPENAI_API_KEY"), temperature = 0)
     prompt = ChatPromptTemplate.from_messages([
         ("system", prompt_str),
         ("user", "{input}")])
     
-    agent = create_react_agent(llm, tools, prompt)
+    agent = create_cohere_react_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "generate an personalized investment portfolio for me." })
     st.info(result.get("output"))
@@ -103,7 +98,5 @@ with st.form('my_form'):
     submitted = st.form_submit_button('Submit')
     if submitted:
         prompt_str = prompt_str_template.format(risk_tolerance = risk_tolerance_option, investment_goal = investment_goals, 
-                               investment_horizon = investment_horizon_option, investment_style = investment_styles_option, 
-                               tools = tools, tool_names = [tool.name for tool in tools], 
-                               agent_scratchpad="")
+                               investment_horizon = investment_horizon_option, investment_style = investment_styles_option)
         generate_response()
