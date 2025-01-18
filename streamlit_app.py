@@ -70,7 +70,11 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
   and user's specific investment goals, investment horizon, and risk_tolerance. 
   * Analyze the retrieved data using historical performance, risk profiles, etc  based on the asset class type.
   * Based on this analysis and user input, recommend specific allocations for subcategories within the asset class. 
-  * Explain the rationale behind the allocation percentages for each subcategory."""
+  * Explain the rationale behind the allocation percentages for each subcategory.
+  Tools: {tools}
+  Tool names: {tool_names}
+  """
+
 
 prompt_str = ""
 
@@ -80,7 +84,7 @@ def generate_response():
         ("system", prompt_str),
         ("user", "{input}")])
     
-    agent = create_react_agent(llm, tools, prompt)
+    agent = create_react_agent(llm, tools, prompt, tool_names=[tool.name for tool in tools])
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "generate an personalized investment portfolio for me." })
     st.info(result.get("output"))
