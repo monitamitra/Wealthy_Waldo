@@ -4,7 +4,7 @@ import os
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
-from langchain.vectorstores import Chroma
+from langchain_community.vectorstores import Chroma
 from langchain.tools.retriever import create_retriever_tool
 from langchain.agents import AgentExecutor
 from langchain_community.embeddings import HuggingFaceBgeEmbeddings
