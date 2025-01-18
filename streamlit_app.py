@@ -73,6 +73,8 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
   * Explain the rationale behind the allocation percentages for each subcategory.
   Tools: {tools}
   Tool names: {tool_names}
+
+  {agent_scratchpad}
   """
 
 
@@ -102,5 +104,6 @@ with st.form('my_form'):
     if submitted:
         prompt_str = prompt_str_template.format(risk_tolerance = risk_tolerance_option, investment_goal = investment_goals, 
                                investment_horizon = investment_horizon_option, investment_style = investment_styles_option, 
-                               tools = tools, tool_names = [tool.name for tool in tools])
+                               tools = tools, tool_names = [tool.name for tool in tools], 
+                               agent_scratchpad="")
         generate_response()
