@@ -84,7 +84,7 @@ def generate_response():
         ("system", prompt_str),
         ("user", "{input}")])
     
-    agent = create_react_agent(llm, tools, prompt, tool_names=[tool.name for tool in tools])
+    agent = create_react_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "generate an personalized investment portfolio for me." })
     st.info(result.get("output"))
@@ -101,5 +101,6 @@ with st.form('my_form'):
     submitted = st.form_submit_button('Submit')
     if submitted:
         prompt_str = prompt_str_template.format(risk_tolerance = risk_tolerance_option, investment_goal = investment_goals, 
-                               investment_horizon = investment_horizon_option, investment_style = investment_styles_option)
+                               investment_horizon = investment_horizon_option, investment_style = investment_styles_option, 
+                               tools = tools, tool_names = [tool.name for tool in tools])
         generate_response()
