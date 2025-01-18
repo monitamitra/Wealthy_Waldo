@@ -3,6 +3,8 @@ from dotenv import load_dotenv
 import os
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_openai import ChatOpenAI
+from langchain_community.embeddings import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain.tools.retriever import create_retriever_tool
 from langchain.agents import AgentExecutor
@@ -10,6 +12,7 @@ from langchain_community.embeddings import HuggingFaceBgeEmbeddings
 from langchain_cohere import ChatCohere, create_cohere_react_agent
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.document_loaders import TextLoader
+from langchain.agents import AgentExecutor, create_react_agent
 
  
 load_dotenv(".env")
@@ -24,12 +27,8 @@ text_splitter = RecursiveCharacterTextSplitter(
 )
 doc_splits = text_splitter.split_documents(docs)
 
-embeddings = HuggingFaceBgeEmbeddings(
-    model_name="BAAI/bge-small-en-v1.5",
-    model_kwargs={"device": "cpu"},
-    encode_kwargs={"normalize_embeddings": True},
-)
-vector_store = FAISS.from_documents(doc_splits, embeddings)
+
+vector_store = FAISS.from_documents(doc_splits, OpenAIEmbeddings())
 
 vector_store_retriever = vector_store.as_retriever()
 retriever_tool = create_retriever_tool(
@@ -76,12 +75,12 @@ prompt_str_template = """your name is Wealthy Waldo. You are an investment plann
 prompt_str = ""
 
 def generate_response():
-    llm = ChatCohere(OPENAI_API_KEY=os.getenv("OPENAI_API_KEY"), temperature = 0)
+    llm = ChatOpenAI(OPENAI_API_KEY=os.getenv("OPENAI_API_KEY"), temperature = 0)
     prompt = ChatPromptTemplate.from_messages([
         ("system", prompt_str),
         ("user", "{input}")])
     
-    agent = create_cohere_react_agent(llm, tools, prompt)
+    agent = create_react_agent(llm, tools, prompt)
     agent_executor = AgentExecutor(agent=agent, tools=tools, verbose=True)
     result = agent_executor.invoke({"input": "generate an personalized investment portfolio for me." })
     st.info(result.get("output"))
