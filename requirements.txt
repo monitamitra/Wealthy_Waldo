@@ -1,0 +1,12 @@
+streamlit
+langchain
+langchain_community
+langchain_openai
+beautifulsoup4
+tavily-python
+unstructured
+markdown
+openai
+faiss-cpu
+tiktoken
+nltk>=3.5
