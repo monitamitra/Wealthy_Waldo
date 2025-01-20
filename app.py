@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 import nltk
 from langchain_openai import ChatOpenAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -6,10 +7,12 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import Chroma
 from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_community.document_loaders import TextLoader
 from langchain.tools.retriever import create_retriever_tool
 from dotenv import load_dotenv, find_dotenv
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.document_loaders import UnstructuredMarkdownLoader
+from langchain_core.documents import Document
 
 load_dotenv(find_dotenv())
 nltk.download('punkt_tab')
