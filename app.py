@@ -3,7 +3,7 @@ import nltk
 from langchain_openai import ChatOpenAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
-from langchain_community.vectorstores import FAISS
+from langchain_community.vectorstores import Chroma
 from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain.tools.retriever import create_retriever_tool
@@ -69,7 +69,7 @@ def create_vectordb():
         # Select embeddings
         embeddings = OpenAIEmbeddings()
         # Create a vectorstore from documents
-        db = FAISS.from_documents(texts, embeddings)
+        db = Chroma.from_documents(texts, embeddings)
         # Create retriever interface
         retriever = db.as_retriever()
         return create_retriever_tool (
