@@ -9,6 +9,5 @@ unstructured
 markdown
 openai
 faiss-cpu
-chromadb
 tiktoken
 nltk>=3.5
