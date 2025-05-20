@@ -1,6 +1,8 @@
 import streamlit as st
 import os
+import yfinance as yf
 import nltk
+from langchain.tools import tool
 from langchain_openai import ChatOpenAI
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_openai import OpenAIEmbeddings
@@ -26,41 +28,45 @@ def generate_response(human_prompt):
         return response["messages"][-1].content
 
 def create_agent():
-        vectordb_tool = create_vectordb()
-        web_search_tool = create_websearch_tool()
-        tools = [vectordb_tool, web_search_tool]
+        tools = [vectordb_tool, websearch_tool, asset_performance_tool]
 
         llm = ChatOpenAI(temperature = 0)
 
-        system_prompt = SystemMessage("""Your name is Wealthy Waldo. You are an investment planning assistant who generates
-        a personalized and specific investment portfolio for a user based on their given 
-        risk tolerance, investment goal, investment horizon, and investment style. First use 
-        the vectordb_tool to decide what types of assets and their respective allocations
-        the user should incorporate into their portfolio. For each asset class that you decided 
-        to include in the user's investment portfolio, use the web_search_tool to search any 
-        news or information related to the respective assets. 
-    
-        Example Output: 
-        **Overall Asset Allocation :
-        * Bond ETFs: 20%
-        * Common Stock: 80%
-        * ... and so on for all asset classes
-        - explanation: Bond ETFs is generally suited for people with your 
-            investment style. According to recent news, common stock has been on the rise 
-            while bond etfs have been on the decline so you may need to adjust the 
-            allocation percentages accordingly depending on your risk tolerance.
+        system_prompt = SystemMessage("""
+You are Wealthy Waldo, an investment planning assistant that generates personalized portfolios 
+based on user inputs: risk tolerance, investment goal, investment horizon, and investment style.
 
-    **Detailed Asset Class Breakdowns => using Vector Store**
-    * Query the vector store to find information on relevant subcategories and investment options specific to that asset class
-  and user's specific investment goals, investment horizon, and risk_tolerance. 
-  * Analyze the retrieved data using historical performance, risk profiles, etc  based on the asset class type.
-  * Based on this analysis and user input, recommend specific allocations for subcategories within the asset class. 
-  * Explain the rationale behind the allocation percentages for each subcategory.""")
+Follow this reasoning process:
+
+1. Use the **Asset_class_knowledge_base** (vectordb_tool) to identify suitable asset classes 
+   and general allocation strategies for the user profile.
+2. Use the **websearch_tool** to gather current news or trends for each recommended asset class.
+3. Use the **asset_performance_tool** to fetch real-time price and daily change data 
+   (e.g., for tickers like 'VTI', 'BND', or 'QQQ') to support or refine your recommendations.
+
+In your output, provide:
+- A high-level asset allocation breakdown (e.g., 60%% stocks, 40%% bonds) based on user input and knowledge base.
+- Supporting rationale that incorporates both historical insights and live data.
+- Optional: Highlight any market conditions that may impact the user's portfolio or require caution.
+
+Example Output:
+**Overall Asset Allocation**
+- Bond ETFs: 20%
+- Stock ETFs: 70%
+- REITs: 10%
+
+**Rationale**
+- Bond ETFs (e.g., BND) are suitable for moderate risk tolerance; currently trading at $74.10 (-0.25% today).
+- Stock ETFs (e.g., VTI) align with your long-term goal and show positive daily growth (+1.12%).
+- REITs diversify your portfolio and historically perform well in medium-term horizons.
+
+Use concise, actionable language. Always explain your reasoning with reference to retrieved data or live performance.
+""")
         
         return create_react_agent(llm, tools, state_modifier=system_prompt)
 
-
-def create_vectordb():
+@tool
+def vectordb_tool():
         # loader = TextLoader("knowledge_base.md")
         markdown_path = "knowledge_base.md"
         loader = UnstructuredMarkdownLoader(markdown_path)
@@ -82,13 +88,28 @@ def create_vectordb():
     in the user's personalized investment portfolio based on their risk tolerance, 
     investment goal, investment horizon, and investment style.""")
 
-def create_websearch_tool():
+@tool
+def websearch_tool():
     web_search_tool = TavilySearchResults(max_results = 4)
     web_search_tool.description = """find relevant information and/or news about each specific asset 
     class in the user's investment portfolio from the internet to advise the user on 
     constructing their investment portfolio."""
     return web_search_tool
 
+@tool
+def asset_performance_tool(ticker: str) -> str:
+    """Fetches current price and daily change % for a given asset ticker."""
+    try:
+        stock = yf.Ticker(ticker)
+        price = stock.info['regularMarketPrice']
+        change = stock.info['regularMarketChangePercent']
+        return f"{ticker} is trading at ${price:.2f} ({change:+.2f}%) today."
+    except:
+        return f"Could not fetch performance data for {ticker}."
+
+asset_performance_tool.description = (
+    "Get current market price and daily %% change for a financial asset (e.g., ETF or stock ticker like 'VTI')."
+)
 
 # Page title
 st.set_page_config(page_title='💸 Wealthy Waldo 🤑')
