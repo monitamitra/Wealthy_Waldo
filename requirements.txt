@@ -47,3 +47,5 @@ websockets==15.0.1
 yfinance==0.2.61
 nltk
 langchain
+langchain_open
+langchain_openai
