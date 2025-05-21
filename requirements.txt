@@ -51,3 +51,4 @@ langchain-openai
 langchain-community
 langgraph
 unstructured
+markdown
