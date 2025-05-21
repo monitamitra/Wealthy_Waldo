@@ -80,8 +80,8 @@ Format your response as follows:
 - Mention any major trends from the web search (e.g., interest rate hikes, housing outlook).
 - Use live performance data to explain why certain assets are emphasized or de-emphasized.
 
-Do not guess. Base your outputs on actual tool responses and user input context.
-""")
+Do not guess. Base your outputs on actual tool responses and user input context. Only include the final recommended asset allocation and rationale. 
+Do not include intermediate drafts or placeholders like "TBD%".""")
 
         
         return create_react_agent(llm, tools, state_modifier=system_prompt)
