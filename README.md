@@ -5,6 +5,10 @@
 
 **App Link:** https://wealthy-waldo.streamlit.app/
 
-![image](https://github.com/user-attachments/assets/6cfd5be1-d764-40d8-9c9c-9b7505be2144)
+### User Input
+![User_input](https://github.com/user-attachments/assets/ae90f943-7958-4a4c-aebc-984249b1d609)
 
-![image](https://github.com/user-attachments/assets/0e5d00d6-ef80-4516-8555-52cf5922cf93)
+### Agent Output
+![image](https://github.com/user-attachments/assets/214a0182-dc16-41dd-97f5-745ef67f69f4)
+
+
