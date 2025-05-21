@@ -1,5 +1,5 @@
 # Wealthy Waldo: A GenAI-Powered Investment Planning Assistant
-- Wealthy Waldo is an AI-powered investment planning assistant that generates personalized portfolio recommendations based on a user's risk tolerance, investment goal, and time horizon. Built with LangChain, OpenAI, and Streamlit, the app combines LLM reasoning with real-time financial data and user-uploaded context to create grounded, explainable investment strategies.
+- Wealthy Waldo is an AI-powered investment planning assistant that generates personalized portfolio recommendations based on a user's risk tolerance, investment goal, and time horizon. 
 
 **App Link:** https://wealthy-waldo.streamlit.app/
 ---
