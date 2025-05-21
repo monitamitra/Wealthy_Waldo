@@ -20,15 +20,37 @@ load_dotenv(find_dotenv())
 nltk.download('punkt_tab')
 nltk.download('averaged_perceptron_tagger_eng') 
 
-def generate_response(human_prompt):
+def generate_response(human_prompt, uploaded_file=None):
     # Load document if file is uploaded
     if human_prompt is not None:
-        main_agent = create_agent()
+        main_agent = create_agent(uploaded_file)
         response = main_agent.invoke({"messages": HumanMessage(human_prompt)})
         return response["messages"][-1].content
 
-def create_agent():
+def create_agent(uploaded_file=None):
         tools = [vectordb_tool(), websearch_tool(), asset_performance_tool]
+
+        # if user has uploaded file, create tool
+        if uploaded_file is not None:
+            docs = [uploaded_file.read().decode()]
+            # Split documents into chunks
+            text_splitter = RecursiveCharacterTextSplitter(chunk_size=300, chunk_overlap=30)
+            texts = text_splitter.create_documents(docs)
+            # Select embeddings
+            embeddings = OpenAIEmbeddings()
+            # Create a vectorstore from documents
+            db = FAISS.from_documents(texts, embeddings)
+            # Create retriever interface
+            retriever = db.as_retriever()
+            # create tool
+            user_notes_tool = create_retriever_tool(
+            retriever,
+            name="user_notes_tool",
+            description="Retrieve personal investment notes and preferences from the user's uploaded document"
+        )
+            # append tool to tool list
+            tools.append(user_notes_tool)
+
 
         llm = ChatOpenAI(temperature = 0)
 
@@ -41,6 +63,7 @@ Use the tools provided to inform your recommendation process:
 1. Use `vectordb_tool` to determine which asset classes and general allocations are suitable for the user profile.
 2. Use `websearch_tool` to gather current news or trends that may impact the asset classes you're recommending.
 3. Use `asset_performance_tool` to retrieve real-time market price and daily performance data for each asset class (e.g., ETFs like VTI, BND, QQQ) to justify or adjust allocation amounts.
+4. If available, use `user_notes_tool` to incorporate the user's uploaded financial preferences or constraints.
 
 Format your response as follows:
 
@@ -111,6 +134,7 @@ st.info('Hello! I am Wealthy Waldo! What can I do to make you wealthy today?')
 
 # Form input 
 result = []
+uploaded_file = st.file_uploader("📄 Optionally upload your financial notes (Markdown or text)", type=["txt", "md"])
 with st.form('myform', clear_on_submit=True):
     risk_tolerance = st.select_slider("Risk Tolerance", options = [ "Conservative", "Moderate", "Aggressive"])
     investment_goal = st.text_area("What are your short-term or long-term goals?")
@@ -131,7 +155,7 @@ with st.form('myform', clear_on_submit=True):
             human_prompt = human_template.format(risk_tolerance = risk_tolerance, 
                         investment_goal = investment_goal, investment_horizon = 
                         investment_horizon, investment_style = investment_style)
-            response = generate_response(human_prompt)
+            response = generate_response(human_prompt, uploaded_file)
             result.append(response)
                      
 
