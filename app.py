@@ -65,6 +65,10 @@ Use the tools provided to inform your recommendation process:
 3. Use `asset_performance_tool` to retrieve real-time market price and daily performance data for each asset class (e.g., ETFs like VTI, BND, QQQ) to justify or adjust allocation amounts.
 4. If available, use `user_notes_tool` to incorporate the user's uploaded financial preferences or constraints.
 
+Recommend the most appropriate mix of investment vehicles—such as ETFs, mutual funds, bonds, REITs, individual stocks, or commodities—based on the user's risk tolerance, investment goal, and investment horizon. 
+Suggest specific assets or examples when helpful, but do not limit recommendations to ETFs alone unless they are clearly the best fit.
+
+                                      
 Format your response as follows:
 
 **Overall Asset Allocation**
