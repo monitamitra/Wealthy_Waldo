@@ -93,8 +93,9 @@ def websearch_tool():
 
 @tool
 def asset_performance_tool(ticker: str) -> str:
-    print("[CALLED] get_asset_performance")
     """Get current market price and daily %% change for a financial asset (e.g., ETF or stock ticker like 'VTI')."""
+    print("[CALLED] get_asset_performance")
+    
     try:
         stock = yf.Ticker(ticker)
         price = stock.info['regularMarketPrice']
