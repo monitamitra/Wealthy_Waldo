@@ -67,7 +67,9 @@ Use concise, actionable language. Always explain your reasoning with reference t
 
 @tool
 def vectordb_tool():
-        # loader = TextLoader("knowledge_base.md")
+        """Search for specific information about what type of investments to include 
+    in the user's personalized investment portfolio based on their risk tolerance, 
+    investment goal, investment horizon, and investment style."""
         markdown_path = "knowledge_base.md"
         loader = UnstructuredMarkdownLoader(markdown_path)
         data = loader.load()
@@ -81,24 +83,19 @@ def vectordb_tool():
         db = FAISS.from_documents(texts, embeddings)
         # Create retriever interface
         retriever = db.as_retriever()
-        return create_retriever_tool (
-        retriever,
-        "Asset_class_knowledge_base",
-    """Search for specific information about what type of investments to include 
-    in the user's personalized investment portfolio based on their risk tolerance, 
-    investment goal, investment horizon, and investment style.""")
+        return create_retriever_tool (retriever, "Asset_class_knowledge_base")
 
 @tool
 def websearch_tool():
-    web_search_tool = TavilySearchResults(max_results = 4)
-    web_search_tool.description = """find relevant information and/or news about each specific asset 
+    """find relevant information and/or news about each specific asset 
     class in the user's investment portfolio from the internet to advise the user on 
     constructing their investment portfolio."""
+    web_search_tool = TavilySearchResults(max_results = 4)
     return web_search_tool
 
 @tool
 def asset_performance_tool(ticker: str) -> str:
-    """Fetches current price and daily change % for a given asset ticker."""
+    """Get current market price and daily %% change for a financial asset (e.g., ETF or stock ticker like 'VTI')."""
     try:
         stock = yf.Ticker(ticker)
         price = stock.info['regularMarketPrice']
@@ -106,10 +103,6 @@ def asset_performance_tool(ticker: str) -> str:
         return f"{ticker} is trading at ${price:.2f} ({change:+.2f}%) today."
     except:
         return f"Could not fetch performance data for {ticker}."
-
-asset_performance_tool.description = (
-    "Get current market price and daily %% change for a financial asset (e.g., ETF or stock ticker like 'VTI')."
-)
 
 # Page title
 st.set_page_config(page_title='💸 Wealthy Waldo 🤑')
