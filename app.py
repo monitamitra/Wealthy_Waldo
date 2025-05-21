@@ -28,7 +28,7 @@ def generate_response(human_prompt):
         return response["messages"][-1].content
 
 def create_agent():
-        tools = [vectordb_tool, websearch_tool, asset_performance_tool]
+        tools = [vectordb_tool(), websearch_tool(), asset_performance_tool]
 
         llm = ChatOpenAI(temperature = 0)
 
@@ -63,11 +63,7 @@ Do not guess. Base your outputs on actual tool responses and user input context.
         
         return create_react_agent(llm, tools, state_modifier=system_prompt)
 
-@tool
 def vectordb_tool():
-        """Search for specific information about what type of investments to include 
-    in the user's personalized investment portfolio based on their risk tolerance, 
-    investment goal, investment horizon, and investment style."""
         markdown_path = "knowledge_base.md"
         loader = UnstructuredMarkdownLoader(markdown_path)
         data = loader.load()
@@ -81,15 +77,19 @@ def vectordb_tool():
         db = FAISS.from_documents(texts, embeddings)
         # Create retriever interface
         retriever = db.as_retriever()
-        return create_retriever_tool (retriever, "Asset_class_knowledge_base")
+        return create_retriever_tool(
+        retriever,
+        name="vectordb_tool",
+        description="""Search for specific information about what type of investments to include 
+    in the user's personalized investment portfolio based on their risk tolerance, 
+    investment goal, investment horizon, and investment style."""
+    )
 
-@tool
 def websearch_tool():
-    """find relevant information and/or news about each specific asset 
+    return TavilySearchResults(max_results = 4,
+                    description = """find relevant information and/or news about each specific asset 
     class in the user's investment portfolio from the internet to advise the user on 
-    constructing their investment portfolio."""
-    web_search_tool = TavilySearchResults(max_results = 4)
-    return web_search_tool
+    constructing their investment portfolio.""")
 
 @tool
 def asset_performance_tool(ticker: str) -> str:
