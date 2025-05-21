@@ -6,7 +6,8 @@
 **App Link:** https://wealthy-waldo.streamlit.app/
 
 ### User Input
-![User_input](https://github.com/user-attachments/assets/ae90f943-7958-4a4c-aebc-984249b1d609)
+![image](https://github.com/user-attachments/assets/e98c1ddc-7489-44fb-b945-291631e2d7e4)
+
 
 ### Agent Output
 ![image](https://github.com/user-attachments/assets/214a0182-dc16-41dd-97f5-745ef67f69f4)
