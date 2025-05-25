@@ -52,7 +52,7 @@ def create_agent(uploaded_file=None):
             tools.append(user_notes_tool)
 
 
-        llm = ChatOpenAI(temperature = 0.3)
+        llm = ChatOpenAI(temperature = 0)
 
         system_prompt = """
 You are Wealthy Waldo, a sophisticated AI investment assistant.
