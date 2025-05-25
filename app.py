@@ -23,7 +23,7 @@ def generate_response(human_prompt, uploaded_file=None):
     # Load document if file is uploaded
     if human_prompt is not None:
         main_agent = create_agent(uploaded_file)
-        response = main_agent.invoke([HumanMessage(content=human_prompt)])
+        response = main_agent.invoke({"input": human_prompt})
         return response[-1].content
 
 def create_agent(uploaded_file=None):
