@@ -92,7 +92,7 @@ Do not guess. Base your outputs on actual tool responses and user input context.
         tools=tools,
         system_message=system_prompt)
 
-        return AgentExecutor(agent=agent, tools=tools)
+        return AgentExecutor.from_agent_and_tools(agent=agent, tools=tools)
 
 def vectordb_tool():
         markdown_path = "knowledge_base.md"
