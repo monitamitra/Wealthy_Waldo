@@ -9,12 +9,11 @@ from langchain_openai import OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from langgraph.prebuilt import create_react_agent
 from langchain_core.messages import SystemMessage, HumanMessage
-from langchain_community.document_loaders import TextLoader
 from langchain.tools.retriever import create_retriever_tool
 from dotenv import load_dotenv, find_dotenv
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_community.document_loaders import UnstructuredMarkdownLoader
-from langchain_core.documents import Document
+from langchain.agents import create_openai_functions_agent, AgentExecutor
 
 load_dotenv(find_dotenv())
 nltk.download('punkt_tab')
@@ -87,7 +86,13 @@ Format your response as follows:
 Do not guess. Base your outputs on actual tool responses and user input context.""")
 
         
-        return create_react_agent(llm, tools, state_modifier=system_prompt)
+        # return create_react_agent(llm, tools, state_modifier=system_prompt)
+        agent = create_openai_functions_agent(
+        llm=llm,
+        tools=tools,
+        system_message=system_prompt)
+
+        return AgentExecutor(agent=agent, tools=tools)
 
 def vectordb_tool():
         markdown_path = "knowledge_base.md"
