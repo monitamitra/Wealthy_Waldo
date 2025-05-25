@@ -24,7 +24,8 @@ def generate_response(human_prompt, uploaded_file=None):
     if human_prompt is not None:
         main_agent = create_agent(uploaded_file)
         response = main_agent.invoke({"input": human_prompt})
-        return response["output"]
+        st.write("DEBUG:", response)
+        return response
 
 def create_agent(uploaded_file=None):
         tools = [vectordb_tool(), websearch_tool(), asset_performance_tool]
