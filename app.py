@@ -86,7 +86,7 @@ Format your response as follows:
 Do not guess. Base your outputs on actual tool responses and user input context.""")
 
         agent = create_react_agent(
-        llm=llm,
+        model=llm,
         tools=tools,
         prompt=system_prompt)
 
