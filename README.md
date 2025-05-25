@@ -24,10 +24,11 @@
 ## Screenshots
 
 ### User Input
-![image](https://github.com/user-attachments/assets/e98c1ddc-7489-44fb-b945-291631e2d7e4)
+![image](https://github.com/user-attachments/assets/9b3472a7-7bac-40bc-97c8-23acb978e360)
 
 
 ### Agent Output
-![image](https://github.com/user-attachments/assets/214a0182-dc16-41dd-97f5-745ef67f69f4)
+![image](https://github.com/user-attachments/assets/a12ba890-7fd8-46b3-b487-7c39d4e52817)
+
 
 
