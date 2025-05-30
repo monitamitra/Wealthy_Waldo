@@ -184,12 +184,18 @@ st.info('Hello! I am Wealthy Waldo! What can I do to make you wealthy today?')
 # Form input 
 result = []
 uploaded_file = st.file_uploader("📄 Optionally upload your financial notes (Markdown or text)", type=["txt", "md"])
-with st.form('myform', clear_on_submit=True):
-    risk_tolerance = st.select_slider("Risk Tolerance", options = [ "Conservative", "Moderate", "Aggressive"])
-    investment_goal = st.text_area("What are your short-term or long-term goals?")
-    investment_horizon = st.select_slider("Investment Horizon", options = ["Short Term (few months to 3 years)", 
-                            "Medium Term (5-10 years)", "Long Term (at least 10 years)"])
-    investment_style = st.selectbox("Investment Styles", options = ["Passive", "Active"])
+with st.form('myform'):
+    risk_tolerance = st.select_slider("Risk Tolerance", 
+                                    options = [ "Conservative", "Moderate", "Aggressive"], 
+                                    key="risk_tolerance")
+    investment_goal = st.text_area("What are your short-term or long-term goals?", 
+                                   key="investment_goal")
+    investment_horizon = st.select_slider("Investment Horizon",  options = 
+                                        ["Short Term (few months to 3 years)", 
+                            "Medium Term (5-10 years)", "Long Term (at least 10 years)"],
+                            key="investment_horizon")
+    investment_style = st.selectbox("Investment Styles", options = ["Passive", "Active"], 
+                                    key="investment_style")
     
     submitted = st.form_submit_button('Submit', disabled = not(risk_tolerance or 
                     investment_goal or investment_horizon or investment_style))
@@ -201,12 +207,16 @@ with st.form('myform', clear_on_submit=True):
             risk tolerance, {investment_goal} investment goal, and a {investment_horizon} 
             investment horizon."""
             
-            human_prompt = human_template.format(risk_tolerance = risk_tolerance, 
-                        investment_goal = investment_goal, investment_horizon = 
-                        investment_horizon, investment_style = investment_style)
-            response = generate_response(human_prompt, uploaded_file)
-            result.append(response)
-                     
+            human_prompt = human_template.format(
+                risk_tolerance=st.session_state["risk_tolerance"],
+                investment_goal=st.session_state["investment_goal"],
+                investment_horizon=st.session_state["investment_horizon"],
+                investment_style=st.session_state["investment_style"]
+            )
 
-if len(result):
-    st.info(response)
+            response = generate_response(human_prompt, uploaded_file)
+            if response:
+                st.info(response)
+            else:
+                st.error("Sorry, I couldn't generate a plan. Try again or check your inputs.")
+                    
